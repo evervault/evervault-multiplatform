@@ -47,29 +47,6 @@ val ktorVersion = "2.3.1"
 kotlin {
     android()
 
-    val applePlatforms: List<KotlinNativeTarget> = listOf(
-
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64(),
-        // swiftklib currently doesn't support below platforms in the latest release but support has been added in a recent pull request so next release should support it
-//        macosX64(),
-//        macosArm64(),
-//        watchosX64(),
-//        watchosArm32(),
-//        watchosArm64(),
-//        watchosSimulatorArm64(),
-//        tvosX64(),
-//        tvosArm64(),
-//        tvosSimulatorArm64()
-    )
-
-    applePlatforms.forEach {
-        it.binaries.framework {
-            baseName = "shared"
-        }
-    }
-
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -82,25 +59,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
             }
-        }
-
-
-        val platformMain = applePlatforms.map { sourceSets.getByName("${it.name}Main") }
-        val platformTest = applePlatforms.map { sourceSets.getByName("${it.name}Test") }
-
-        val darwinMain by creating {
-            dependsOn(commonMain)
-        }
-        val darwinTest by creating {
-            dependsOn(commonTest)
-        }
-
-        platformMain.forEach {
-            it.dependsOn(darwinMain)
-        }
-
-        platformTest.forEach {
-            it.dependsOn(darwinTest)
         }
     }
 }
