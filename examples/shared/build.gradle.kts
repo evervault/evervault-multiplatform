@@ -29,19 +29,6 @@ android {
     }
 }
 
-//dependencies {
-//    implementation("androidx.core:core-ktx:1.8.0")
-//    implementation("androidx.appcompat:appcompat:1.6.1")
-//    implementation("com.google.android.material:material:1.5.0")
-
-
-    // crypto
-//    implementation("org.bouncycastle:bcprov-jdk15on:1.70")
-
-//    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-//    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-//}
-
 val ktorVersion = "2.3.1"
 
 kotlin {
