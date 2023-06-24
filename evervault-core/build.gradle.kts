@@ -5,6 +5,7 @@ plugins {
     kotlin("plugin.serialization") version "1.8.21"
     id("io.github.ttypic.swiftklib") version "0.2.1"
     id("maven-publish")
+    id("signing")
 }
 
 val ktorVersion = "2.3.1"
@@ -49,4 +50,12 @@ kotlin {
             }
         }
     }
+}
+
+signing {
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    useInMemoryPgpKeys(signingKey ?: "", signingPassword ?: "")
+
+    sign(publishing.publications["kotlinMultiplatform"])
 }
