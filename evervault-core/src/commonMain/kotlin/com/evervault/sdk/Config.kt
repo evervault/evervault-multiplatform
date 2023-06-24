@@ -27,7 +27,15 @@ internal data class Config(
     )
 }
 
+/**
+ * A data class that represents custom URLs for the Evervault Kotlin Multiplatform SDK configuration.
+ *
+ * The `ConfigUrls` data class allows you to specify custom URLs for specific configuration options in the Evervault Kotlin Multiplatform SDK.
+ */
 data class ConfigUrls(
+    /**
+     * The URL for the custom keys endpoint. Default is the Evervault keys URL.
+     */
     var keysUrl: String = KEYS_URL
 )
 
@@ -39,7 +47,6 @@ internal data class EncryptionConfig(
     val authTagLength: Int = 128, // bits
     val publicHash: String = "sha256",
     val evVersion: String = "NOC", // (Tk9D) NIST-P256 KDF
-    val header: Header = Header("evervault", 1),
     val maxFileSizeInMB: Int = MAX_FILE_SIZE_IN_MB,
     val maxFileSizeInBytes: Int = MAX_FILE_SIZE_IN_MB * 1024 * 1024
 ) {
