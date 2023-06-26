@@ -9,7 +9,7 @@ The [Evervault](https://evervault.com/) Kotlin Multiplatform SDK is a library th
 ## Supported Platforms
 - JVM, including Android
 
-Note: iOS is not currently supported due to Kotlin Multiplatform limitations of including Swift packages, which is required to use CoreCrypto. To use Evervault on iOS, use the [Evervault iOS SDK](https://github.com/evervault/evervault-ios) instead.
+Note: iOS is not currently supported due to Kotlin Multiplatform limitations of including Swift packages, which is required to use CryptoKit. To use Evervault on iOS, use the [Evervault iOS SDK](https://github.com/evervault/evervault-ios) instead.
 
 ## Related Projects
 
