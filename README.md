@@ -13,7 +13,7 @@ Note: iOS is not currently supported due to Kotlin Multiplatform limitations of 
 
 ## Related Projects
 
-Although the Evervault Kotlin Multiplatform SDK provides the core encryption functionality, it does not provide any UI components for capturing sensitive data. For this, we recommend using the [Evervault Android SDK]()
+Although the Evervault Kotlin Multiplatform SDK provides the core encryption functionality, it does not provide any UI components for capturing sensitive data. For this, we recommend using the [Evervault Android SDK](https://github.com/evervault/evervault-android)
 
 Similarly, to use the full feature set for Java (Server-side), we recommend using the [Evervault Java SDK](https://github.com/evervault/evervault-java).
 
