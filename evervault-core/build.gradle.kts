@@ -16,7 +16,7 @@ version = "1.0"
 kotlin {
     jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
+            kotlinOptions.jvmTarget = "11"
         }
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
@@ -40,6 +40,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
             }
         }
 
@@ -58,4 +59,10 @@ signing {
     useInMemoryPgpKeys(signingKey ?: "", signingPassword ?: "")
 
     sign(publishing.publications["kotlinMultiplatform"])
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }

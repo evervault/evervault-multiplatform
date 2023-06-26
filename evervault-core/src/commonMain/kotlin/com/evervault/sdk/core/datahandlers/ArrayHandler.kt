@@ -6,7 +6,7 @@ internal class ArrayHandler : DataHandler {
         return data is Iterable<*>
     }
 
-    override suspend fun encrypt(data: Any, context: DataHandlerContext): Any {
+    override fun encrypt(data: Any, context: DataHandlerContext): Any {
         return (data as Iterable<*>).mapNotNull {
             it?.let { context.encrypt(it) }
         }

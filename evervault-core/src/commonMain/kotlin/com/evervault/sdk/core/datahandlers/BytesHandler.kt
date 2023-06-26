@@ -8,7 +8,7 @@ internal class BytesHandler(private val encryptionService: EncryptionService) : 
         return data is ByteArray
     }
 
-    override suspend fun encrypt(data: Any, context: DataHandlerContext): Any {
+    override fun encrypt(data: Any, context: DataHandlerContext): Any {
         return encryptionService.encryptData(data as ByteArray)
     }
 }

@@ -6,11 +6,11 @@ import com.evervault.sdk.core.EncryptionService
 internal class NumberHandler(private val encryptionService: EncryptionService) : DataHandler {
 
     override fun canEncrypt(data: Any): Boolean {
-        return data is Number
+        return data is Number || data is UInt || data is UByte || data is UShort || data is ULong
     }
 
-    override suspend fun encrypt(data: Any, context: DataHandlerContext): Any {
-        val string = (data as Number).toString()
+    override fun encrypt(data: Any, context: DataHandlerContext): Any {
+        val string = data.toString()
         return encryptionService.encryptString(string, DataType.NUMBER)
     }
 }

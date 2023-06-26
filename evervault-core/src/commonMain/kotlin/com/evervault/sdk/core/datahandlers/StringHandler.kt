@@ -9,7 +9,7 @@ internal class StringHandler(private val encryptionService: EncryptionService) :
         return data is String
     }
 
-    override suspend fun encrypt(data: Any, context: DataHandlerContext): Any {
+    override fun encrypt(data: Any, context: DataHandlerContext): Any {
         return encryptionService.encryptString(data as String, DataType.STRING)
     }
 }

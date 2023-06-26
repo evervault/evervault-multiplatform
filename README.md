@@ -59,7 +59,7 @@ Here's an example of encrypting a password:
 val encryptedPassword = Evervault.shared.encrypt("Super Secret Password")
 ```
 
-The `encrypt` method returns an `Any` type, so you will need to safely cast the result based on the data type you provided. For Boolean, Numerics, and Strings, the encrypted data is returned as a String. For Arrays, Lists and Maps, the encrypted data maintains the same structure but is encrypted. For ByteArray, the encrypted data is returned as encrypted ByteArray, which can be useful for encrypting files.
+The `encrypt` method returns an `Any` type, so you will need to safely cast the result based on the data type you provided. For Boolean, Numerics, and Strings, the encrypted data is returned as a String. For Arrays, Lists and Maps, the encrypted data maintains the same structure but is encrypted (except that Arrays become Lists). For ByteArray, the encrypted data is returned as encrypted ByteArray, which can be useful for encrypting files.
 
 ## Sample App
 

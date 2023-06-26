@@ -9,7 +9,7 @@ internal class BooleanHandler(private val encryptionService: EncryptionService) 
         return data is Boolean
     }
 
-    override suspend fun encrypt(data: Any, context: DataHandlerContext): Any {
+    override fun encrypt(data: Any, context: DataHandlerContext): Any {
         val string = (data as Boolean).toString()
         return encryptionService.encryptString(string, DataType.BOOLEAN)
     }

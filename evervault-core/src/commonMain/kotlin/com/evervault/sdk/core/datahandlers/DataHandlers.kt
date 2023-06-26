@@ -5,7 +5,7 @@ import com.evervault.sdk.core.exceptions.NotPossibleToHandleDataTypeException
 
 internal class DataHandlers(private val encryptionService: EncryptionService) {
     inner class Context(private val dataHandlers: DataHandlers) : DataHandlerContext {
-        override suspend fun encrypt(data: Any): Any {
+        override fun encrypt(data: Any): Any {
             return dataHandlers.encrypt(data)
         }
     }
@@ -19,7 +19,7 @@ internal class DataHandlers(private val encryptionService: EncryptionService) {
         ArrayHandler(),
     )
 
-    suspend fun encrypt(data: Any): Any {
+    fun encrypt(data: Any): Any {
         val handler = handlers.firstOrNull { it.canEncrypt(data) }
             ?: throw NotPossibleToHandleDataTypeException
         val context = Context(this)

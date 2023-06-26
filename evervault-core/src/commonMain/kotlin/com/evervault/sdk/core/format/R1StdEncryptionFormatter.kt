@@ -14,9 +14,9 @@ internal class R1StdEncryptionFormatter(
 ): EncryptionFormatter {
 
     @OptIn(ExperimentalEncodingApi::class)
-    override fun formatEncryptedData(dataType: DataType, keyIv: String, encryptedData: String): String {
+    override fun formatEncryptedData(dataType: DataType, keyIv: ByteArray, encryptedData: String): String {
         val evVersionPrefix = Base64.encode(evVersion.toByteArray())
-        return "ev:${if(isDebug) "debug:" else ""}${evVersionPrefix}${dataType.prefix}:${keyIv.paddingRemoved}:${publicKey.encodeBase64().paddingRemoved}:${encryptedData.paddingRemoved}:$"
+        return "ev:${if(isDebug) "debug:" else ""}${evVersionPrefix}${dataType.prefix}:${Base64.encode(keyIv).paddingRemoved}:${publicKey.encodeBase64().paddingRemoved}:${encryptedData.paddingRemoved}:$"
     }
 
     override fun formatFile(keyIv: ByteArray, encryptedData: ByteArray): ByteArray {
@@ -24,24 +24,6 @@ internal class R1StdEncryptionFormatter(
         val versionNumber: ByteArray = byteArrayOf(0x03)
         val offsetToData: ByteArray = byteArrayOf(0x37, 0x00)
         val flags: ByteArray = byteArrayOf(0x00)
-
-//        val fileContents = ByteBuffer.allocate(
-//            evEncryptedFileIdentifier.size +
-//                    versionNumber.size +
-//                    offsetToData.size +
-//                    publicKey.size +
-//                    keyIv.size +
-//                    flags.size +
-//                    encryptedData.size
-//        )
-//            .put(evEncryptedFileIdentifier)
-//            .put(versionNumber)
-//            .put(offsetToData)
-//            .put(publicKey)
-//            .put(keyIv)
-//            .put(flags)
-//            .put(encryptedData)
-//            .array()
 
         val fileContents = evEncryptedFileIdentifier + versionNumber + offsetToData + publicKey + keyIv + flags + encryptedData
 

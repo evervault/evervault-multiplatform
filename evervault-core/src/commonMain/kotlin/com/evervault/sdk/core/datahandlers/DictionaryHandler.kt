@@ -6,7 +6,7 @@ internal class DictionaryHandler : DataHandler {
         return data is Map<*, *>
     }
 
-    override suspend fun encrypt(data: Any, context: DataHandlerContext): Any {
+    override fun encrypt(data: Any, context: DataHandlerContext): Any {
         return (data as Map<*, *>).mapValues {
             it.value?.let { context.encrypt(it) }
         }

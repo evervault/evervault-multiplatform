@@ -18,7 +18,7 @@ internal class Crypto(
         return encrypt(string.toByteArray()) { encryptedData, keyIv ->
             encryptionFormatter.formatEncryptedData(
                 dataType,
-                Base64.encode(keyIv),
+                keyIv,
                 Base64.encode(encryptedData)
             )
         }
