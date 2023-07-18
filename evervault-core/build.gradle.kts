@@ -4,9 +4,9 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization") version "1.8.21"
     id("io.github.ttypic.swiftklib") version "0.2.1"
-    id("maven-publish")
     id("signing")
-
+    id("org.jetbrains.dokka")
+    id("com.vanniktech.maven.publish")
 }
 
 val ktorVersion = "2.3.1"

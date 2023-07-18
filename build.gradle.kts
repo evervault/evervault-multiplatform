@@ -13,6 +13,8 @@ plugins {
     kotlin("jvm") version "1.8.21" apply false
     id("org.jetbrains.kotlin.android") version "1.8.20" apply false
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("org.jetbrains.dokka") version "1.8.20" apply false
+    id("com.vanniktech.maven.publish") version "0.25.3"
 }
 
 allprojects {
