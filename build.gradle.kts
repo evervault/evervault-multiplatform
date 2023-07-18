@@ -7,6 +7,7 @@ buildscript {
         classpath("com.android.tools.build:gradle:7.4.2")
     }
 }
+group = "com.evervault.sdk"
 
 plugins {
     kotlin("jvm") version "1.8.21" apply false
