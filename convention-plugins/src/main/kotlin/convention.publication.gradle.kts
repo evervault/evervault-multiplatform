@@ -39,7 +39,6 @@ val javadocJar by tasks.registering(Jar::class) {
 }
 
 fun getExtraString(name: String) = ext[name]?.toString()
-
 publishing {
     // Configure maven central repository
     repositories {
@@ -87,5 +86,13 @@ publishing {
 
 // Signing artifacts. Signing.* extra properties values will be used
 signing {
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    useInMemoryPgpKeys(signingKey, signingPassword)
     sign(publishing.publications)
+}
+
+val signingTasks = tasks.withType<Sign>()
+tasks.withType<AbstractPublishToMaven>().configureEach {
+  dependsOn(signingTasks)
 }
