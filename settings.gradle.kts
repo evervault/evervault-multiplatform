@@ -7,6 +7,7 @@ pluginManagement {
 }
 
 rootProject.name = "evervault-multiplatform"
+includeBuild("convention-plugins")
 include("evervault-core")
 
 include(":examples:shared")
