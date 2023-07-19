@@ -24,7 +24,7 @@ Our Kotlin Multiplatform SDK distributed via [maven](https://search.maven.org/ar
 ### Gradle DSL
 
 ```kotlin
-implementation("com.evervault.sdk:evervault-core:1.0.0")
+implementation("com.evervault.sdk:evervault-multiplatform:1.0.0")
 ```
 
 ### Maven
@@ -32,7 +32,7 @@ implementation("com.evervault.sdk:evervault-core:1.0.0")
 ```xml
 <dependency>
   <groupId>com.evervault.sdk</groupId>
-  <artifactId>evervault-core</artifactId>
+  <artifactId>evervault-multiplatform</artifactId>
   <version>1.0.0</version>
 </dependency>
 ```
