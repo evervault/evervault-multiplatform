@@ -95,6 +95,42 @@ class Evervault private constructor() {
         return client.encrypt(data)
     }
 
+    /**
+     * Runs an Evervault Function with the supplied token.
+     *
+     * @param functionName The name of the Function.
+     * @param token The Run token used to execute the Function.
+     * @param payload The payload to send to the Function.
+     * @return The Function run result. The return type is `Any`, and the caller is responsible for safely casting the result based on the original data type.
+     * @throws EvervaultException.InitializationError If the encryption process fails.
+     *
+     * ## Declaration
+     * ```kotlin
+     * suspend fun runFunction(functionName: String, token: String, payload: Any): Any
+     * ```
+     *
+     * ## Example
+     * ```kotlin
+     * val result = Evervault.shared.runFunction("MyPythonFunction", "token1234567890", encryptedData)
+     * ```
+     *
+     * The `runFunction` function allows you to run an Evervault Function using a Run Token. Run Tokens are single use, time bound tokens for invoking an Evervault Function with a given payload.
+     *
+     * Run Tokens will only last for 5 minutes and must be used with the same payload that was used to create the Run Token.
+     *
+     * The function returns the result data as `Any`, and the caller is responsible for safely casting the result based on the original data type. For Boolean, Numerics, and Strings, the encrypted data is returned as a String. For Lists and Maps, the encrypted data maintains the same structure but is encrypted. For ByteArray, the encrypted data is returned as encrypted ByteArray.
+     *
+     * Note that the encryption process is performed asynchronously using the `suspend` keyword. It's recommended to call this function from within a `suspend` context.
+     */
+    suspend fun runFunction(functionName: String, token: String, payload: Any): Any {
+        val client = client ?: throw EvervaultException.InitializationError
+        return client.runFunctionWithToken(functionName, token, payload)
+    }
+
+    suspend fun <T : Any> decrypt(token: String, data: Any, type: Class<T>): Any {
+        val client = client ?: throw EvervaultException.InitializationError
+        return client.decryptWithToken<T>(token, data)
+    }
 
     companion object {
         /**
@@ -145,6 +181,14 @@ internal class Client(private val config: Config, private val http: Http, privat
         val handlers = DataHandlers(cipher)
 
         return handlers.encrypt(data)
+    }
+
+    suspend fun runFunctionWithToken(functionName: String, token: String, payload: Any): Any {
+        return http.runFunctionWithToken(functionName, token, payload)
+    }
+
+    suspend fun <T: Any> decryptWithToken(token: String, data: Any): Any {
+        return http.decryptWithToken<T>(token, data)
     }
 }
 
