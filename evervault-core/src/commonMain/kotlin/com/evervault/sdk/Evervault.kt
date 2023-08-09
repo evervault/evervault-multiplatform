@@ -127,7 +127,31 @@ class Evervault private constructor() {
         return client.runFunctionWithToken(functionName, token, payload)
     }
 
-    suspend fun <T : Any> decrypt(token: String, data: Any, type: Class<T>): Any {
+    /**
+     * Decrypts data previously encrypted with the `encrypt()` function or through Relay.
+     *
+     * @param token The token used to decrypt the data.
+     * @param data The encrypted data that's to be decrypted.
+     * @return The decrypted data
+     * @throws EvervaultException.InitializationError If the encryption process fails.
+     *
+     * ## Declaration
+     * ```kotlin
+     * suspend fun decrypt(token: String, data: Any): Any
+     * ```
+     *
+     * ## Example
+     * ```kotlin
+     * val decrypted = Evervault.shared.decrypt<String>("token1234567890", encryptedData)
+     * ```
+     *
+     * The `decrypt()` function allows you to decrypt previously encrypted data using a token and attempt to deserialize it to the parameterized type. The token is a single use, time bound token for decrypting data.
+     *
+     * Tokens will only last for 5 minutes and must be used with the same payload that was used to create the token.
+     *
+     * The function returns the decrypted data as `Any`, and the caller is responsible for safely casting the result based on the original data type. For Boolean, Numerics, and Strings, the encrypted data is returned as a String. For Lists and Maps, the encrypted data maintains the same structure but is encrypted. For ByteArray, the encrypted data is returned as encrypted ByteArray.
+     */
+    suspend fun <T : Any> decrypt(token: String, data: Any): Any {
         val client = client ?: throw EvervaultException.InitializationError
         return client.decryptWithToken<T>(token, data)
     }
