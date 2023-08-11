@@ -1,7 +1,7 @@
 package com.evervault.sdk.core
 
 import com.evervault.sdk.core.models.FunctionRunResponse
-import com.evervault.sdk.core.models.FunctionResponseResult
+// import com.evervault.sdk.core.models.FunctionResponseResult
 import com.evervault.sdk.ConfigUrls
 import com.evervault.sdk.HttpConfig
 import com.evervault.sdk.test.getenv
@@ -15,9 +15,9 @@ class HttpRequestTest {
     fun testExecuteFunctionWithToken() = runBlocking {
         val urls = ConfigUrls()
         val mockResponse = FunctionRunResponse(
-            result = FunctionResponseResult(
-                message = "mock result"
-            ),
+            result = object {
+                val message = "test"
+            },
             runId = "function_run_1234567890",
             appUuid = "app_1234567890"
         )
