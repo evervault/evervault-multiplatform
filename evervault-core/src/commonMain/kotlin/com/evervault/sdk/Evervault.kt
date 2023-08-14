@@ -149,7 +149,7 @@ class Evervault private constructor() {
      *
      * Tokens will only last for 5 minutes and must be used with the same payload that was used to create the token.
      *
-     * The function returns the decrypted data as `Any`, and the caller is responsible for safely casting the result based on the original data type. For Boolean, Numerics, and Strings, the encrypted data is returned as a String. For Lists and Maps, the encrypted data maintains the same structure but is encrypted. For ByteArray, the encrypted data is returned as encrypted ByteArray.
+     * The function returns the decrypted data as `Any`, and the caller is responsible for safely casting the result based on the original data type. The decrypted data is returned as the parameterized type T.
      */
     suspend fun <T : Any> decrypt(token: String, data: Any): Any {
         val client = client ?: throw EvervaultException.InitializationError

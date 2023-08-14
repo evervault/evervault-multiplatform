@@ -95,7 +95,7 @@ internal class HttpRequest(private var config: HttpConfig) {
         val response: HttpResponse = httpClient.post("${config.apiUrl}/decrypt") {
             setBody(data)
             headers {
-                append("Authorization", "Bearer ${token}")
+                append("Authorization", "Token ${token}")
             }
         }
 
