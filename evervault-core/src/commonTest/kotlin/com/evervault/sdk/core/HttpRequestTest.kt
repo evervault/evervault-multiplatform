@@ -31,8 +31,21 @@ data class TokenData(
 )
 
 @Serializable
-data class Name(
-    var name: String?
+data class RawData(
+    var stringData: String?,
+    var numberData: Int?,
+    var floatData: Double?,
+    var booleanData: Boolean?,
+    var arrayData: ArrayList<String>?,
+)
+
+@Serializable
+data class EncryptedTestData(
+    var stringData: String?,
+    var numberData: String?,
+    var floatData: String?,
+    var booleanData: String?,
+    var arrayData: ArrayList<String>?,
 )
 
 class HttpRequestTest {
@@ -50,7 +63,7 @@ class HttpRequestTest {
     private val appUuid = getenv("VITE_EV_APP_UUID")
     private val teamUuid = getenv("VITE_EV_TEAM_UUID")
 
-    private suspend fun encryptData(url: Any, data: Name): Name {
+    private suspend fun encryptData(url: Any, data: RawData): EncryptedTestData {
         val task = coroutineScope {
             async {
                 try {
@@ -66,7 +79,7 @@ class HttpRequestTest {
                             }
                         }
                     val responseBody = response.bodyAsText()
-                    return@async json.decodeFromString<Name>(responseBody)
+                    return@async json.decodeFromString<EncryptedTestData>(responseBody)
                 } catch (error: Error) {
                     throw error
                 }
@@ -116,16 +129,41 @@ class HttpRequestTest {
             context = "default"
         )
 
-        val data = Name(name="Bob")
+        val data = RawData(
+            stringData = "Bob",
+            numberData = 1,
+            floatData = 1.5,
+            booleanData = true,
+            arrayData = arrayListOf("hello", "world"),
+        )
         // Encrypt some data
         val encrypted = encryptData(ConfigUrls().apiUrl, data)
         // Get a run token
         val token = createClientSideToken(ConfigUrls().apiUrl, encrypted)
         val decrypted = http.decryptWithToken(token.token, encrypted) as Map<String, Any>
+        assertEquals(
+            decrypted["stringData"],
+            "Bob"
+        )
 
         assertEquals(
-            decrypted["name"],
-            "Bob"
+            decrypted["numberData"],
+            1.0
+        )
+
+        assertEquals(
+            decrypted["floatData"],
+            1.5
+        )
+
+        assertEquals(
+            decrypted["booleanData"],
+            true
+        )
+
+        assertEquals(
+            decrypted["arrayData"],
+            arrayListOf<String>("hello", "world")
         )
     }
 }
