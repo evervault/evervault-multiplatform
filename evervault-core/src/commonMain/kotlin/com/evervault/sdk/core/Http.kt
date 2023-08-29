@@ -17,11 +17,7 @@ internal class Http(
         return keysLoader.loadKeys()
     }
 
-    suspend fun runFunctionWithToken(functionName: String, token: String, payload: Any): Any {
-        return httpRequest.runFunctionWithToken(functionName, token, payload)
-    }
-
-    suspend fun <T: Any> decryptWithToken(token: String, data: Any): Any {
-        return httpRequest.decryptWithToken<T>(token, data)
+    suspend fun decryptWithToken(token: String, data: Any): Any {
+        return httpRequest.decryptWithToken(token, data)
     }
 }

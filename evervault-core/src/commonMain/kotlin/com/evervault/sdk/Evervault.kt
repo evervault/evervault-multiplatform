@@ -96,43 +96,11 @@ class Evervault private constructor() {
     }
 
     /**
-     * Runs an Evervault Function with the supplied token.
-     *
-     * @param functionName The name of the Function.
-     * @param token The Run token used to execute the Function.
-     * @param payload The payload to send to the Function.
-     * @return The Function run result. The return type is `Any`, and the caller is responsible for safely casting the result based on the original data type.
-     * @throws EvervaultException.InitializationError If the encryption process fails.
-     *
-     * ## Declaration
-     * ```kotlin
-     * suspend fun runFunction(functionName: String, token: String, payload: Any): Any
-     * ```
-     *
-     * ## Example
-     * ```kotlin
-     * val result = Evervault.shared.runFunction("MyPythonFunction", "token1234567890", encryptedData)
-     * ```
-     *
-     * The `runFunction` function allows you to run an Evervault Function using a Run Token. Run Tokens are single use, time bound tokens for invoking an Evervault Function with a given payload.
-     *
-     * Run Tokens will only last for 5 minutes and must be used with the same payload that was used to create the Run Token.
-     *
-     * The function returns the result data as `Any`, and the caller is responsible for safely casting the result based on the original data type. For Boolean, Numerics, and Strings, the encrypted data is returned as a String. For Lists and Maps, the encrypted data maintains the same structure but is encrypted. For ByteArray, the encrypted data is returned as encrypted ByteArray.
-     *
-     * Note that the encryption process is performed asynchronously using the `suspend` keyword. It's recommended to call this function from within a `suspend` context.
-     */
-    suspend fun runFunction(functionName: String, token: String, payload: Any): Any {
-        val client = client ?: throw EvervaultException.InitializationError
-        return client.runFunctionWithToken(functionName, token, payload)
-    }
-
-    /**
      * Decrypts data previously encrypted with the `encrypt()` function or through Relay.
      *
      * @param token The token used to decrypt the data.
-     * @param data The encrypted data that's to be decrypted.
-     * @return The decrypted data
+     * @param data The encrypted data that's to be decrypted. Must be in the form of a map e.g { "data": encryptedData }
+     * @return The decrypted data. The data is a `Map<String, Any>` and will need to be cast. See below for an example
      * @throws EvervaultException.InitializationError If the encryption process fails.
      *
      * ## Declaration
@@ -142,18 +110,18 @@ class Evervault private constructor() {
      *
      * ## Example
      * ```kotlin
-     * val decrypted = Evervault.shared.decrypt<String>("token1234567890", encryptedData)
+     * val decrypted = Evervault.shared.decrypt("token1234567890", encryptedData) as Map<String, Any>
      * ```
      *
      * The `decrypt()` function allows you to decrypt previously encrypted data using a token and attempt to deserialize it to the parameterized type. The token is a single use, time bound token for decrypting data.
      *
      * Tokens will only last for 5 minutes and must be used with the same payload that was used to create the token.
      *
-     * The function returns the decrypted data as `Any`, and the caller is responsible for safely casting the result based on the original data type. The decrypted data is returned as the parameterized type T.
+     * The function returns the decrypted data as `Map<String, Any>`, and the caller is responsible for safely casting the result based on the original data type.
      */
-    suspend fun <T : Any> decrypt(token: String, data: Any): Any {
+    suspend fun decrypt(token: String, data: Any): Any{
         val client = client ?: throw EvervaultException.InitializationError
-        return client.decryptWithToken<T>(token, data)
+        return client.decryptWithToken(token, data)
     }
 
     companion object {
@@ -207,12 +175,8 @@ internal class Client(private val config: Config, private val http: Http, privat
         return handlers.encrypt(data)
     }
 
-    suspend fun runFunctionWithToken(functionName: String, token: String, payload: Any): Any {
-        return http.runFunctionWithToken(functionName, token, payload)
-    }
-
-    suspend fun <T: Any> decryptWithToken(token: String, data: Any): Any {
-        return http.decryptWithToken<T>(token, data)
+    suspend fun decryptWithToken(token: String, data: Any): Any {
+        return http.decryptWithToken(token, data)
     }
 }
 

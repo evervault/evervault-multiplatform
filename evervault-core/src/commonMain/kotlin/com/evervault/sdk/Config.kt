@@ -3,7 +3,6 @@ package com.evervault.sdk
 import com.evervault.sdk.core.keys.CageKey
 
 private const val KEYS_URL = "https://keys.evervault.com"
-private const val FUNCTION_RUN_URL = "https://run.evervault.com"
 private const val API_URL = "https://api.evervault.com"
 
 private val DEBUG_KEY = CageKey(
@@ -25,7 +24,7 @@ internal data class Config(
         teamId = teamId,
         appId = appId,
         encryption = EncryptionConfig(publicKey),
-        httpConfig = HttpConfig(keysUrl = configUrls.keysUrl, functionRunUrl = configUrls.functionRunUrl, apiUrl = configUrls.apiUrl)
+        httpConfig = HttpConfig(keysUrl = configUrls.keysUrl, apiUrl = configUrls.apiUrl)
     )
 }
 
@@ -39,10 +38,6 @@ data class ConfigUrls(
      * The URL for the custom keys endpoint. Default is the Evervault keys URL.
      */
     var keysUrl: String = KEYS_URL,
-    /**
-     * The URL for the Function Run API.
-     */
-    var functionRunUrl: String = FUNCTION_RUN_URL,
     /**
      * The URL for the API.
      */
@@ -63,4 +58,4 @@ internal data class EncryptionConfig(
     data class Header(val iss: String, val version: Int)
 }
 
-internal data class HttpConfig(var keysUrl: String, var functionRunUrl: String, var apiUrl: String)
+internal data class HttpConfig(var keysUrl: String, var apiUrl: String)

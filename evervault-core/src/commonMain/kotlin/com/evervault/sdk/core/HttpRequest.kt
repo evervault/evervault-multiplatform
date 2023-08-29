@@ -1,6 +1,5 @@
 package com.evervault.sdk.core
 
-import com.evervault.sdk.core.models.FunctionRunResponse
 import com.evervault.sdk.HttpConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.defaultRequest
@@ -15,6 +14,9 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.json.Json
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 internal class HttpRequest(private var config: HttpConfig) {
     private var activeTask: kotlinx.coroutines.Deferred<Any>? = null
@@ -26,31 +28,8 @@ internal class HttpRequest(private var config: HttpConfig) {
     }
 
     private val json = Json { ignoreUnknownKeys = true }
-    
-    suspend fun runFunctionWithToken(functionName: String, token: String, payload: Any): Any {
-        activeTask?.let {
-            return it.await()
-        }
 
-        val task = coroutineScope {
-            async {
-                try {
-                    val result = executeRunFunctionWithToken(functionName, token, payload)
-                    activeTask = null
-                    return@async result
-                } catch (error: Error) {
-                    activeTask = null
-                    throw error
-                }
-            }
-        }
-
-        activeTask = task
-
-        return task.await()
-    }
-
-    suspend fun <T : Any> decryptWithToken(token: String, data: Any): Any {
+    suspend fun decryptWithToken(token: String, data: Any): Any {
         activeTask?.let {
             val res = it.await()
             return res
@@ -59,7 +38,7 @@ internal class HttpRequest(private var config: HttpConfig) {
         val task = coroutineScope{
             async {
                 try {
-                    val result = executeDecryptWithToken<T>(token, data)
+                    val result = executeDecryptWithToken(token, data)
                     activeTask = null
                     return@async result
                 } catch (error: Error) {
@@ -74,24 +53,8 @@ internal class HttpRequest(private var config: HttpConfig) {
         return task.await()
     }
 
-    private suspend fun executeRunFunctionWithToken(functionName: String, token: String, payload: Any): FunctionRunResponse {
-        val response: HttpResponse = httpClient.post("${config.functionRunUrl}/${functionName}") {
-            setBody(payload)
-            headers {
-                append("Authorization", "Bearer ${token}")
-            }
-        }
-
-        if (response.status != HttpStatusCode.OK) {
-            throw Error("Failed to execute function run. Status code: ${response.status}")
-        }
-
-        val responseBody = response.bodyAsText()
-        val body = json.decodeFromString<FunctionRunResponse>(responseBody)
-        return body
-    }
-
-    private suspend fun <T> executeDecryptWithToken(token: String, data: Any): T {
+    private suspend fun executeDecryptWithToken(token: String, payload: Any): Any {
+        val data = Gson().toJson(payload)
         val response: HttpResponse = httpClient.post("${config.apiUrl}/decrypt") {
             setBody(data)
             headers {
@@ -104,7 +67,8 @@ internal class HttpRequest(private var config: HttpConfig) {
         }
 
         val responseBody = response.bodyAsText()
-        val body = json.decodeFromString<Any>(responseBody) as T
-        return body
+        val type: Type = object : TypeToken<Map<String, Any>>() {}.type
+        val map: Map<String, Any> = Gson().fromJson(responseBody, type)
+        return map
     }
 }

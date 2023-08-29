@@ -14,7 +14,6 @@ class HttpKeysLoaderTest {
         val http = Http(
             config = HttpConfig(
                 keysUrl = ConfigUrls().keysUrl,
-                functionRunUrl = ConfigUrls().functionRunUrl,
                 apiUrl = ConfigUrls().apiUrl
             ),
             teamId = getenv("VITE_EV_TEAM_UUID"),
@@ -22,7 +21,6 @@ class HttpKeysLoaderTest {
             context = "default"
         )
         val cageKey = http.loadKeys()
-
         assertEquals(
             cageKey,
             CageKey(publicKey = cageKey.ecdhP256KeyUncompressed, isDebugMode = cageKey.isDebugMode)
