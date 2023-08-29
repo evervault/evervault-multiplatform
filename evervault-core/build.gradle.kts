@@ -34,6 +34,8 @@ kotlin {
 
                 // JSON
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+
+                implementation("com.google.code.gson:gson:2.8.7")
             }
         }
 
@@ -41,6 +43,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
+                implementation("com.google.code.gson:gson:2.8.7")
             }
         }
 

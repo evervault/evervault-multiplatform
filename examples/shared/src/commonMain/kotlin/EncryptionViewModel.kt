@@ -10,4 +10,10 @@ class EncryptionViewModel {
     suspend fun encryptedValue(): String {
         return Evervault.shared.encrypt("Foo") as String
     }
+
+    suspend fun decryptedValue(): String {
+        val encrypted = Evervault.shared.encrypt("Foo") as String
+        val decrypted = Evervault.shared.decrypt("<YOUR_TOKEN_HERE>", mapOf("data" to encrypted)) as Map<String, Any>
+        return decrypted["data"] as String
+    }
 }
