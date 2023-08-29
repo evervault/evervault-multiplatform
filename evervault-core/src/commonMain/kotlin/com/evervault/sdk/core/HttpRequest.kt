@@ -24,6 +24,7 @@ internal class HttpRequest(private var config: HttpConfig) {
     private var httpClient = HttpClient {
         defaultRequest {
             header(HttpHeaders.ContentType, "application/json")
+            header(HttpHeaders.UserAgent, "Evervault/Kotlin")
         }
     }
 
