@@ -61,6 +61,22 @@ val encryptedPassword = Evervault.shared.encrypt("Super Secret Password")
 
 The `encrypt` method returns an `Any` type, so you will need to safely cast the result based on the data type you provided. For Boolean, Numerics, and Strings, the encrypted data is returned as a String. For Arrays, Lists and Maps, the encrypted data maintains the same structure but is encrypted (except that Arrays become Lists). For ByteArray, the encrypted data is returned as encrypted ByteArray, which can be useful for encrypting files.
 
+### Decrypting Data
+
+You can use the `decrypt` method to decrypt data previously encrypted through Evervault. To perform decryptions you will be required to provide a Client Side Token. The token is a time bound token for decrypting data. The token can be generated using our backend SDKs for use in our client-side SDKs. The payload provided to the `decrypt` method must be the same as the payload used to generate the token.
+
+
+Here's an example of decrypting data.
+
+```kotlin
+val encrypted = Evervault.shared.encrypt("John Doe")
+
+val decrypted = Evervault.shared.decrypt("<CLIENT_SIDE_TOKEN>", mapOf("name" to encrypted)) as Map<String, Any>
+println(decrypted["name"]) // Prints "John Doe"
+```
+
+The `decrypt` function will return `Any`, however this can be cast to `Map<String, Any>`. The data argument must be a map.
+
 ## Sample App
 
 The Evervault Kotlin Multiplatform SDK Package includes a sample app, located in the `examples` directory. The sample app consist of a `shared` module, which contains the Evervault Kotlin Multiplatform SDK, and an `android` module, which contains the sample app.
