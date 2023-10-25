@@ -22,7 +22,7 @@ internal class StringHandlerTest {
     @BeforeTest
     fun setUp() {
         encryptionServiceMock = mock<EncryptionService> {
-            on { encryptString(anyOrNull(), anyOrNull()) } doReturn "encrypted"
+            on { encryptString(anyOrNull(), anyOrNull(), anyOrNull()) } doReturn "encrypted"
         }
         contextMock = mock<DataHandlerContext> {}
         handler = StringHandler(encryptionServiceMock)
@@ -43,8 +43,15 @@ internal class StringHandlerTest {
 
     @Test
     fun testEncrypt() {
-        assertEquals("encrypted", handler.encrypt("String value", contextMock))
-        verify(encryptionServiceMock).encryptString(eq("String value"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt("String value", contextMock, "test-role"))
+        verify(encryptionServiceMock).encryptString(eq("String value"), anyOrNull(), eq("test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
+    }
+
+    @Test
+    fun testEncryptWithoutRole() {
+        assertEquals("encrypted", handler.encrypt("String value", contextMock, null))
+        verify(encryptionServiceMock).encryptString(eq("String value"), anyOrNull(), eq(null))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq(null))
     }
 }

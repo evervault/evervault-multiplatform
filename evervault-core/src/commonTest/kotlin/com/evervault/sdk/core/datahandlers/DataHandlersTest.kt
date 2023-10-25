@@ -15,7 +15,7 @@ internal class DataHandlersTest {
     @BeforeTest
     fun setUp() {
         encryptionServiceMock = mock<EncryptionService> {
-            onGeneric { encryptString(anyOrNull(), anyOrNull()) } doAnswer {
+            onGeneric { encryptString(anyOrNull(), anyOrNull(), anyOrNull()) } doAnswer {
                 "_${it.arguments[1]}:${it.arguments[0]}_"
             }
         }
@@ -34,6 +34,7 @@ internal class DataHandlersTest {
                 ),
                 true to false
             ),
+            "test-role"
         )
 
         assertTrue(result is Map<*, *>)
@@ -48,6 +49,6 @@ internal class DataHandlersTest {
 
         assertEquals("_BOOLEAN:false_", result[true])
 
-        verify(encryptionServiceMock, times(5)).encryptString(anyOrNull(), anyOrNull())
+        verify(encryptionServiceMock, times(5)).encryptString(anyOrNull(), anyOrNull(), eq("test-role"))
     }
 }

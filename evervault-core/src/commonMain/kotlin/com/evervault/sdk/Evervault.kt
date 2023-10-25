@@ -71,6 +71,7 @@ class Evervault private constructor() {
      * Encrypts the provided data using the Evervault encryption service.
      *
      * @param data The data to be encrypted. Supported data types include Boolean, Numerics, Strings, Lists, Maps, and ByteArray.
+     * @param role role id obtained from the Evervault UI. The role assigns the permissions to the encrypted value.
      * @return The encrypted data. The return type is `Any`, and the caller is responsible for safely casting the result based on the original data type.
      * @throws EvervaultException.InitializationError If the encryption process fails.
      *
@@ -90,9 +91,9 @@ class Evervault private constructor() {
      *
      * Note that the encryption process is performed asynchronously using the `suspend` keyword. It's recommended to call this function from within a `suspend` context.
      */
-    suspend fun encrypt(data: Any): Any {
+    suspend fun encrypt(data: Any, role: String? = null): Any {
         val client = client ?: throw EvervaultException.InitializationError
-        return client.encrypt(data)
+        return client.encrypt(data, role)
     }
 
     /**
@@ -168,11 +169,11 @@ internal class Client(private val config: Config, private val http: Http, privat
         )
     }
 
-    suspend fun encrypt(data: Any): Any {
+    suspend fun encrypt(data: Any, role: String?): Any {
         val cipher = cryptoLoader.loadCipher()
         val handlers = DataHandlers(cipher)
 
-        return handlers.encrypt(data)
+        return handlers.encrypt(data, role)
     }
 
     suspend fun decryptWithToken(token: String, data: Any): Any {

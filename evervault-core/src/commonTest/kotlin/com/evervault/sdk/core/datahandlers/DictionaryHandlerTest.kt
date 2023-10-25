@@ -13,7 +13,7 @@ internal class DictionaryHandlerTest {
     @BeforeTest
     fun setUp() {
         contextMock = mock<DataHandlerContext> {
-            onGeneric { encrypt(anyOrNull()) } doAnswer { it.arguments.first() }
+            onGeneric { encrypt(anyOrNull(), anyOrNull()) } doAnswer { it.arguments.first() }
         }
         handler = DictionaryHandler()
     }
@@ -38,35 +38,35 @@ internal class DictionaryHandlerTest {
 
     @Test
     fun testEncryptEmptyStringDictionary() {
-        assertEquals(emptyMap<String, String>(), handler.encrypt(emptyMap<String, String>(), contextMock))
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals(emptyMap<String, String>(), handler.encrypt(emptyMap<String, String>(), contextMock, "test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptStringDictionary() {
-        assertEquals(mapOf("a" to "A", "b" to "B"), handler.encrypt(mapOf("a" to "A", "b" to "B"), contextMock))
-        verify(contextMock, times(2)).encrypt(anyOrNull())
+        assertEquals(mapOf("a" to "A", "b" to "B"), handler.encrypt(mapOf("a" to "A", "b" to "B"), contextMock, "test-role"))
+        verify(contextMock, times(2)).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptNumbersDictionary() {
-        assertEquals(mapOf(1 to 10, 2 to 20), handler.encrypt(mapOf(1 to 10, 2 to 20), contextMock))
-        verify(contextMock, times(2)).encrypt(anyOrNull())
+        assertEquals(mapOf(1 to 10, 2 to 20), handler.encrypt(mapOf(1 to 10, 2 to 20), contextMock, "test-role"))
+        verify(contextMock, times(2)).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptMixedDictionary() {
-        val result = handler.encrypt(mapOf("a" to 1, 2 to "b"), contextMock) as Map<Any?, Any?>
+        val result = handler.encrypt(mapOf("a" to 1, 2 to "b"), contextMock, "test-role") as Map<Any?, Any?>
         assertNotNull(result)
         assertEquals(2, result.size)
         assertEquals(1, result["a"])
         assertEquals("b", result[2])
-        verify(contextMock, times(2)).encrypt(anyOrNull())
+        verify(contextMock, times(2)).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptMixedMultidimensionalDictionary() {
-        val result = handler.encrypt(mapOf("z" to mapOf("a" to 1, "b" to "B"), 2 to true), contextMock) as Map<Any?, Any?>
+        val result = handler.encrypt(mapOf("z" to mapOf("a" to 1, "b" to "B"), 2 to true), contextMock, "test-role") as Map<Any?, Any?>
         assertNotNull(result)
         assertEquals(2, result.size)
         val inner = result["z"] as Map<String, Any>?
@@ -74,6 +74,6 @@ internal class DictionaryHandlerTest {
         assertEquals(1, inner!!["a"])
         assertEquals("B", inner["b"])
         assertEquals(true, result[2])
-        verify(contextMock, times(2)).encrypt(anyOrNull())
+        verify(contextMock, times(2)).encrypt(anyOrNull(), eq("test-role"))
     }
 }

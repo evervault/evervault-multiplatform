@@ -1,6 +1,5 @@
 package com.evervault.sdk.core
 
-// import com.evervault.sdk.core.models.FunctionResponseResult
 import com.evervault.sdk.ConfigUrls
 import com.evervault.sdk.HttpConfig
 import com.evervault.sdk.test.getenv
@@ -58,10 +57,9 @@ class HttpRequestTest {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    private val functionName = getenv("VITE_EV_FUNCTION_NAME")
-    private val apiKey = getenv("VITE_EV_API_KEY")
-    private val appUuid = getenv("VITE_EV_APP_UUID")
-    private val teamUuid = getenv("VITE_EV_TEAM_UUID")
+    private val apiKey = getenv("EV_API_KEY")
+    private val appUuid = getenv("EV_APP_UUID")
+    private val teamUuid = getenv("EV_TEAM_UUID")
 
     private suspend fun encryptData(url: Any, data: RawData): EncryptedTestData {
         val task = coroutineScope {

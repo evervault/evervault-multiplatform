@@ -23,7 +23,7 @@ internal class NumberHandlerTest {
     @BeforeTest
     fun setUp() {
         encryptionServiceMock = mock<EncryptionService> {
-            on { encryptString(anyOrNull(), anyOrNull()) } doReturn "encrypted"
+            on { encryptString(anyOrNull(), anyOrNull(), anyOrNull()) } doReturn "encrypted"
         }
         contextMock = mock<DataHandlerContext> {}
         handler = NumberHandler(encryptionServiceMock)
@@ -50,50 +50,50 @@ internal class NumberHandlerTest {
 
     @Test
     fun testEncryptInt() {
-        assertEquals("encrypted", handler.encrypt(1, contextMock))
-        verify(encryptionServiceMock).encryptString(eq("1"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(1, contextMock, "test-role"))
+        verify(encryptionServiceMock).encryptString(eq("1"), anyOrNull(), eq("test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptNegativeInt() {
-        assertEquals("encrypted", handler.encrypt(-1, contextMock))
-        verify(encryptionServiceMock).encryptString(eq("-1"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(-1, contextMock, "test-role"))
+        verify(encryptionServiceMock).encryptString(eq("-1"), anyOrNull(), eq("test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptFloat() {
-        assertEquals("encrypted", handler.encrypt(1.3f, contextMock))
-        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(1.3f, contextMock, "test-role"))
+        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull(), eq("test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptDouble() {
-        assertEquals("encrypted", handler.encrypt(1.3, contextMock))
-        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(1.3, contextMock, "test-role"))
+        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull(), eq("test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptUInt() {
-        assertEquals("encrypted", handler.encrypt(3.toUInt(), contextMock))
-        verify(encryptionServiceMock).encryptString(eq("3"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(3.toUInt(), contextMock, "test-role"))
+        verify(encryptionServiceMock).encryptString(eq("3"), anyOrNull(), eq("test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptUByte() {
-        assertEquals("encrypted", handler.encrypt(3.toUByte(), contextMock))
-        verify(encryptionServiceMock).encryptString(eq("3"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(3.toUByte(), contextMock, "test-role"))
+        verify(encryptionServiceMock).encryptString(eq("3"), anyOrNull(), eq("test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptBigDecimal() {
-        assertEquals("encrypted", handler.encrypt(BigDecimal.valueOf(1.3), contextMock))
-        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(BigDecimal.valueOf(1.3), contextMock, "test-role"))
+        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull(), eq("test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 }

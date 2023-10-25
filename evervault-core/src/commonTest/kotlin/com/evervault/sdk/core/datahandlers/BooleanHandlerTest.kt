@@ -20,7 +20,7 @@ internal class BooleanHandlerTest {
     @BeforeTest
     fun setUp() {
         encryptionServiceMock = mock<EncryptionService> {
-            on { encryptString(anyOrNull(), anyOrNull()) } doReturn "encrypted"
+            on { encryptString(anyOrNull(), anyOrNull(), anyOrNull()) } doReturn "encrypted"
         }
         contextMock = mock<DataHandlerContext> {}
         handler = BooleanHandler(encryptionServiceMock)
@@ -41,15 +41,15 @@ internal class BooleanHandlerTest {
 
     @Test
     fun testEncryptTrue() {
-        assertEquals("encrypted", handler.encrypt(true, contextMock))
-        verify(encryptionServiceMock).encryptString(eq("true"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(true, contextMock, "test-role"))
+        verify(encryptionServiceMock).encryptString(eq("true"), anyOrNull(), eq("test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptFalse() {
-        assertEquals("encrypted", handler.encrypt(false, contextMock))
-        verify(encryptionServiceMock).encryptString(eq("false"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(false, contextMock, "test-role"))
+        verify(encryptionServiceMock).encryptString(eq("false"), anyOrNull(), eq("test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 }
