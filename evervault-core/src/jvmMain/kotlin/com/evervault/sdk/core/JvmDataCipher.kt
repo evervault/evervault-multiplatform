@@ -104,14 +104,12 @@ private fun generateMetadataOffset(metadata: ByteArray): ByteArray {
 }
 
 private fun getCurrentEpochTimestampByteArray(): ByteArray {
-    val timestamp = System.currentTimeMillis() / 1000 // Get current epoch timestamp in seconds
-    val buffer = ByteBuffer.allocate(4) // Create a ByteBuffer with 4 bytes (32 bits)
+    val timestamp = System.currentTimeMillis() / 1000
+    val buffer = ByteBuffer.allocate(4)
 
-    buffer.order(ByteOrder.LITTLE_ENDIAN) // Set the byte order (big-endian)
+    buffer.order(ByteOrder.LITTLE_ENDIAN)
 
-    // Put the timestamp into the ByteBuffer as a 4-byte integer
     buffer.putInt(timestamp.toInt())
 
-    // Convert the ByteBuffer to a ByteArray
     return buffer.array()
 }

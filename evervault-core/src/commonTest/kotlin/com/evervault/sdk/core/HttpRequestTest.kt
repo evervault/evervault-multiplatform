@@ -1,6 +1,5 @@
 package com.evervault.sdk.core
 
-// import com.evervault.sdk.core.models.FunctionResponseResult
 import com.evervault.sdk.ConfigUrls
 import com.evervault.sdk.HttpConfig
 import com.evervault.sdk.test.getenv
