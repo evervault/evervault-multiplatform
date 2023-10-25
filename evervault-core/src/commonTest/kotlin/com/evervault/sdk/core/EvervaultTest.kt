@@ -10,17 +10,18 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
-class BasicTest {
+class EvervaultTest {
 
     private val encryptedStringRegex = Regex("((ev(:|%3A))(debug(:|%3A))?(([A-z0-9+/=%]+)(:|%3A))?((number|boolean|string)(:|%3A))?(([A-z0-9+/=%]+)(:|%3A)){3}(\\$|%24))|(((eyJ[A-z0-9+=.]+){2})([\\w]{8}(-[\\w]{4}){3}-[\\w]{12}))")
 
     @BeforeTest
     fun setup() {
         Evervault.shared.configure(
-            teamId = getenv("VITE_EV_TEAM_UUID"),
-            appId = getenv("VITE_EV_APP_UUID"),
-            customConfig = CustomConfig(isDebugMode = true)
+            teamId = getenv("EV_TEAM_UUID"),
+            appId = getenv("EV_APP_UUID"),
+            customConfig = CustomConfig(isDebugMode = false)
         )
     }
 
@@ -31,6 +32,49 @@ class BasicTest {
         assertNotNull(encryptedString)
         val matches = encryptedStringRegex.findAll(encryptedString as String).count()
         assertEquals(1, matches)
+        assertEquals(true, assertFormatting(encryptedString, DataType.STRING))
+    }
+
+    @Test
+    fun testEncryptANumber() = runBlocking {
+        val numberToEncrypt = 7
+        val encryptedNumber = Evervault.shared.encrypt(numberToEncrypt)
+        println(encryptedNumber)
+        assertNotNull(encryptedNumber)
+        val matches = encryptedStringRegex.findAll(encryptedNumber as String).count()
+        assertEquals(1, matches)
+        assertEquals(true, assertFormatting(encryptedNumber, DataType.NUMBER))
+    }
+
+    @Test
+    fun testDebugCipherText() = runBlocking {
+        Evervault.shared.configure(
+            teamId = getenv("EV_TEAM_UUID"),
+            appId = getenv("EV_APP_UUID"),
+            customConfig = CustomConfig(isDebugMode = true)
+        )
+        val encryptedString = Evervault.shared.encrypt("Foo")
+        val encryptedNumber = Evervault.shared.encrypt(7)
+        val encryptedBoolean = Evervault.shared.encrypt(true)
+
+        assertNotNull(encryptedString)
+        println(encryptedString)
+        assertNotNull(encryptedNumber)
+        println(encryptedNumber)
+        assertNotNull(encryptedBoolean)
+        println(encryptedBoolean)
+
+        assertEquals(true, assertFormatting(encryptedString as String, DataType.STRING, true))
+        assertEquals(true, assertFormatting(encryptedNumber as String, DataType.NUMBER, true))
+        assertEquals(true, assertFormatting(encryptedBoolean as String, DataType.BOOLEAN, true))
+    }
+
+    @Test
+    fun testRoleBasedEncryption() = runBlocking {
+        val encryptedString = Evervault.shared.encrypt("Foo", "decrypt-api")
+        assertNotNull(encryptedString)
+        println(encryptedString)
+        assertEquals(true, assertFormatting(encryptedString as String, DataType.STRING, false))
     }
 
     @Test
@@ -42,7 +86,26 @@ class BasicTest {
         val encryptedImage = Evervault.shared.encrypt(imageData)
         assertNotNull(encryptedImage)
         val encryptedImageData = encryptedImage as ByteArray
-        assertEquals(22197, encryptedImageData.size)
+        assertEquals(22212, encryptedImageData.size)
         writeFile(encryptedImageData)
+    }
+
+    private fun assertFormatting(cipherText: String, dataType: DataType, debugMode: Boolean = false): Boolean {
+        var stringTypeSize = 6;
+        var numberOrBoolTypeSize = 7;
+
+        if (debugMode) {
+            stringTypeSize++
+            numberOrBoolTypeSize++
+        }
+
+        val parts = cipherText.split(":")
+        if (dataType == DataType.STRING) {
+            return parts.size == stringTypeSize
+        }
+        if (dataType == DataType.BOOLEAN || dataType == DataType.NUMBER) {
+            return parts.size == numberOrBoolTypeSize
+        }
+        return false
     }
 }

@@ -3,6 +3,7 @@ package com.evervault.sdk
 import com.evervault.sdk.core.keys.CageKey
 
 private const val KEYS_URL = "https://keys.evervault.com"
+private const val API_URL = "https://api.evervault.com"
 
 private val DEBUG_KEY = CageKey(
     ecdhP256Key = "Al1/Mo85D7t/XvC3I+YYpJvP+OsSyxIbSrhtDhg1SClQ",
@@ -23,7 +24,7 @@ internal data class Config(
         teamId = teamId,
         appId = appId,
         encryption = EncryptionConfig(publicKey),
-        httpConfig = HttpConfig(keysUrl = configUrls.keysUrl)
+        httpConfig = HttpConfig(keysUrl = configUrls.keysUrl, apiUrl = configUrls.apiUrl)
     )
 }
 
@@ -36,7 +37,11 @@ data class ConfigUrls(
     /**
      * The URL for the custom keys endpoint. Default is the Evervault keys URL.
      */
-    var keysUrl: String = KEYS_URL
+    var keysUrl: String = KEYS_URL,
+    /**
+     * The URL for the API.
+     */
+    var apiUrl: String = API_URL,
 )
 
 internal data class EncryptionConfig(
@@ -46,11 +51,11 @@ internal data class EncryptionConfig(
     val ivLength: Int = 12, // bytes
     val authTagLength: Int = 128, // bits
     val publicHash: String = "sha256",
-    val evVersion: String = "NOC", // (Tk9D) NIST-P256 KDF
+    val evVersion: String = "LCY", // (TENZ) NIST-P256 KDF
     val maxFileSizeInMB: Int = MAX_FILE_SIZE_IN_MB,
     val maxFileSizeInBytes: Int = MAX_FILE_SIZE_IN_MB * 1024 * 1024
 ) {
     data class Header(val iss: String, val version: Int)
 }
 
-internal data class HttpConfig(var keysUrl: String)
+internal data class HttpConfig(var keysUrl: String, var apiUrl: String)

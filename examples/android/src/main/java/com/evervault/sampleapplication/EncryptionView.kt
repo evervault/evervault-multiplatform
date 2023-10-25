@@ -17,14 +17,18 @@ import androidx.compose.ui.unit.dp
 fun EncryptionView() {
 
     var encryptedValue: String? by remember { mutableStateOf(null) }
+    var decryptedValue: String? by remember { mutableStateOf(null) }
 
     LaunchedEffect(Unit) {
         encryptedValue = EncryptionViewModel().encryptedValue()
+        decryptedValue = EncryptionViewModel().decryptedValue()
     }
 
     Column(modifier = Modifier.padding(20.dp)) {
         Text("Encrypted string:")
         Text(encryptedValue ?: "Loading..")
+        Text("Decrypted string:")
+        Text(decryptedValue ?: "Loading..")
     }
 
 }

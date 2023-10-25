@@ -12,13 +12,15 @@ class HttpKeysLoaderTest {
     @Test
     fun testLoadKeys() = runBlocking {
         val http = Http(
-            config = HttpConfig(keysUrl = ConfigUrls().keysUrl),
-            teamId = getenv("VITE_EV_TEAM_UUID"),
-            appId = getenv("VITE_EV_APP_UUID"),
+            config = HttpConfig(
+                keysUrl = ConfigUrls().keysUrl,
+                apiUrl = ConfigUrls().apiUrl
+            ),
+            teamId = getenv("EV_TEAM_UUID"),
+            appId = getenv("EV_APP_UUID"),
             context = "default"
         )
         val cageKey = http.loadKeys()
-
         assertEquals(
             cageKey,
             CageKey(publicKey = cageKey.ecdhP256KeyUncompressed, isDebugMode = cageKey.isDebugMode)

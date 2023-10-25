@@ -13,7 +13,7 @@ internal class ArrayHandlerTest {
     @BeforeTest
     fun setUp() {
         contextMock = mock<DataHandlerContext> {
-            onGeneric { encrypt(anyOrNull()) } doAnswer { it.arguments.first() }
+            onGeneric { encrypt(anyOrNull(), anyOrNull()) } doAnswer { it.arguments.first() }
         }
         handler = ArrayHandler()
     }
@@ -37,39 +37,39 @@ internal class ArrayHandlerTest {
 
     @Test
     fun testEncryptEmptyStringArray() {
-        assertEquals(emptyList<String>(), handler.encrypt(emptyList<String>(), contextMock))
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals(emptyList<String>(), handler.encrypt(emptyList<String>(), contextMock, "test-role"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptStringArray() {
-        assertEquals(listOf("a", "b"), handler.encrypt(listOf("a", "b"), contextMock))
-        verify(contextMock, times(2)).encrypt(anyOrNull())
+        assertEquals(listOf("a", "b"), handler.encrypt(listOf("a", "b"), contextMock, "test-role"))
+        verify(contextMock, times(2)).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptNumbersArray() {
-        assertEquals(listOf(1, 2), handler.encrypt(listOf(1, 2), contextMock))
-        verify(contextMock, times(2)).encrypt(anyOrNull())
+        assertEquals(listOf(1, 2), handler.encrypt(listOf(1, 2), contextMock, "test-role"))
+        verify(contextMock, times(2)).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptMixedArray() {
-        val result = handler.encrypt(listOf("a", 2), contextMock) as List<Any?>
+        val result = handler.encrypt(listOf("a", 2), contextMock, "test-role") as List<Any?>
         assertNotNull(result)
         assertEquals(2, result.size)
         assertEquals("a", result[0])
         assertEquals(2, result[1])
-        verify(contextMock, times(2)).encrypt(anyOrNull())
+        verify(contextMock, times(2)).encrypt(anyOrNull(), eq("test-role"))
     }
 
     @Test
     fun testEncryptMixedMultidimensionalArray() {
-        val result = handler.encrypt(listOf(listOf("a", "b"), 2), contextMock) as List<Any?>
+        val result = handler.encrypt(listOf(listOf("a", "b"), 2), contextMock, "test-role") as List<Any?>
         assertNotNull(result)
         assertEquals(2, result.size)
         assertEquals(listOf("a", "b"), result[0])
         assertEquals(2, result[1])
-        verify(contextMock, times(2)).encrypt(anyOrNull())
+        verify(contextMock, times(2)).encrypt(anyOrNull(), anyOrNull())
     }
 }
