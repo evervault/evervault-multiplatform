@@ -10,8 +10,8 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalEncodingApi::class)
 internal class R1StdEncryptionFormatterTest {
 
-    val formatter = R1StdEncryptionFormatter(evVersion = "NOC", publicKey = Base64.decode("UEs="), isDebug = false)
-    val everVaultVersionToUse = "NOC".encodeToByteArray().encodeBase64()
+    val formatter = R1StdEncryptionFormatter(evVersion = "QkTC", publicKey = Base64.decode("UEs="), isDebug = false)
+    val everVaultVersionToUse = "QkTC"
 
     @Test
     fun testFormattingEncryptedDataMustReturnDataInCorrectFormat() {

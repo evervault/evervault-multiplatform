@@ -15,7 +15,9 @@ internal class R1StdEncryptionFormatter(
 
     @OptIn(ExperimentalEncodingApi::class)
     override fun formatEncryptedData(dataType: DataType, keyIv: ByteArray, encryptedData: String): String {
-        val evVersionPrefix = Base64.encode(evVersion.toByteArray())
+        // val evVersionPrefix = Base64.encode(evVersion.toByteArray())
+        // QkTC is a hardcoded version
+        val evVersionPrefix = evVersion
         return "ev:${if(isDebug) "debug:" else ""}${evVersionPrefix}${dataType.prefix}:${Base64.encode(keyIv).paddingRemoved}:${publicKey.encodeBase64().paddingRemoved}:${encryptedData.paddingRemoved}:$"
     }
 

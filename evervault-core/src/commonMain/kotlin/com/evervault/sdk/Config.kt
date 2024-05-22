@@ -51,7 +51,7 @@ internal data class EncryptionConfig(
     val ivLength: Int = 12, // bytes
     val authTagLength: Int = 128, // bits
     val publicHash: String = "sha256",
-    val evVersion: String = "NOC", // (Tk9D) NIST-P256 KDF
+    val evVersion: String = "QkTC", // (QkTC) NIST-P256 KDF with metadata and AADv2
     val maxFileSizeInMB: Int = MAX_FILE_SIZE_IN_MB,
     val maxFileSizeInBytes: Int = MAX_FILE_SIZE_IN_MB * 1024 * 1024
 ) {

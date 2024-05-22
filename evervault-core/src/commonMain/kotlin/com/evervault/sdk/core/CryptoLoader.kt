@@ -73,7 +73,9 @@ internal class CryptoLoader(
             ),
             dataCipher = dataCipherFactory.createCipher(
                 ecdhTeamKey = teamKeyPublic,
+                ephemeralPublicKey = generatedEcdhKey,
                 derivedSecret = sharedKey,
+                isDebugMode = isDebugMode,
                 config = config.encryption,
             ),
             config = config.encryption,

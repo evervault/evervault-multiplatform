@@ -15,7 +15,7 @@ internal class DataHandlersTest {
     @BeforeTest
     fun setUp() {
         encryptionServiceMock = mock<EncryptionService> {
-            onGeneric { encryptString(anyOrNull(), anyOrNull()) } doAnswer {
+            onGeneric { encryptString(anyOrNull(), anyOrNull(), anyOrNull()) } doAnswer {
                 "_${it.arguments[1]}:${it.arguments[0]}_"
             }
         }
@@ -34,6 +34,7 @@ internal class DataHandlersTest {
                 ),
                 true to false
             ),
+            null
         )
 
         assertTrue(result is Map<*, *>)
@@ -48,6 +49,35 @@ internal class DataHandlersTest {
 
         assertEquals("_BOOLEAN:false_", result[true])
 
-        verify(encryptionServiceMock, times(5)).encryptString(anyOrNull(), anyOrNull())
+        verify(encryptionServiceMock, times(5)).encryptString(anyOrNull(), anyOrNull(), isNull())
+    }
+
+    @Test
+    fun testEncryptComplexDataRole() {
+        val result = dataHandlers.encrypt(
+            mapOf(
+                "a" to listOf(1, 2),
+                2 to mapOf(
+                    "b" to true,
+                    "c" to 1.4
+                ),
+                true to false
+            ),
+            "test-role"
+        )
+
+        assertTrue(result is Map<*, *>)
+        assertEquals(3, result.size)
+
+        assertEquals(listOf("_NUMBER:1_", "_NUMBER:2_"), result["a"])
+
+        val dict2 = result[2] as Map<*, *>
+        assertEquals(2, dict2.size)
+        assertEquals("_BOOLEAN:true_", dict2["b"])
+        assertEquals("_NUMBER:1.4_", dict2["c"])
+
+        assertEquals("_BOOLEAN:false_", result[true])
+
+        verify(encryptionServiceMock, times(5)).encryptString(anyOrNull(), anyOrNull(), eq("test-role"))
     }
 }

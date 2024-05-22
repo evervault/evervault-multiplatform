@@ -42,7 +42,7 @@ class BasicTest {
         val encryptedImage = Evervault.shared.encrypt(imageData)
         assertNotNull(encryptedImage)
         val encryptedImageData = encryptedImage as ByteArray
-        assertEquals(22197, encryptedImageData.size)
+        assertEquals(22212, encryptedImageData.size)
         writeFile(encryptedImageData)
     }
 }
