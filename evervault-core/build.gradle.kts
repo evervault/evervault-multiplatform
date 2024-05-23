@@ -66,3 +66,9 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
 }
+
+tasks.withType<Test> {
+    environment("VITE_EV_API_KEY", "ev:key:1:3MgU1gBRL3JDvYjdjrbYNdqiWruga5CfZ4bYmkwq0f1pUuy8DLD8e1teb8xaUuWuj:hRXgmK:VMtnqB")
+    environment("VITE_EV_APP_UUID", "app_a1e318e1ab5a")
+    environment("VITE_EV_TEAM_UUID", "team_47245136635c")
+}

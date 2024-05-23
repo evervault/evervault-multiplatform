@@ -21,6 +21,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import java.util.Base64
 import kotlinx.serialization.json.Json
 import com.google.gson.Gson
@@ -288,6 +289,41 @@ class HttpRequestTest {
         assertEquals(
             listOf(listOf("value1", "value2"), 2.0),
             decrypted["data"]
+        )
+    }
+
+    @Test
+    fun testDecryptWithSDKStringEncryptDenyRole() = runBlocking {
+        val http = Http(
+            config = HttpConfig(
+                keysUrl = ConfigUrls().keysUrl,
+                apiUrl = ConfigUrls().apiUrl
+            ),
+            teamId = teamUuid,
+            appId = appUuid,
+            context = "default"
+        )
+
+        // Encrypt some data
+        Evervault.shared.configure(teamUuid, appUuid)
+        var inputData = "test"
+        val encrypted = Evervault.shared.encrypt(inputData, "test-deny-role") as String
+        // Get a run token
+        val data = SimpleObject(
+            data = encrypted
+        )
+        val token = createClientSideToken(ConfigUrls().apiUrl, data)
+        val exception = assertFailsWith<java.lang.Error>(
+            block = {
+                runBlocking {
+                    http.decryptWithToken(token.token, data) as Map<String, Any>
+                }
+            }
+        )
+
+        assertEquals(
+            "Failed to decrypt data. Status code: 403 ",
+            exception.message
         )
     }
 
