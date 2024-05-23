@@ -11,7 +11,7 @@ plugins {
 val ktorVersion = "2.3.1"
 
 group = "com.evervault.sdk"
-version = "1.2-beta"
+version = "1.2"
 
 kotlin {
     jvm {

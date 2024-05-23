@@ -6,9 +6,9 @@ internal class ArrayHandler : DataHandler {
         return data is Iterable<*>
     }
 
-    override fun encrypt(data: Any, context: DataHandlerContext, role: String?): Any {
+    override fun encrypt(data: Any, context: DataHandlerContext, role: String?, dataType: String?): Any {
         return (data as Iterable<*>).mapNotNull {
-            it?.let { context.encrypt(it, role) }
+            it?.let { context.encrypt(it, role, it::class.simpleName) }
         }
     }
 }

@@ -32,18 +32,26 @@ internal class JvmDataCipher(
 
     }
 
-    override fun encrypt(data: ByteArray, role: String?): EncryptedData {
+    override fun encrypt(data: ByteArray, role: String?, dataType: String?): EncryptedData {
         val keyIv = generateBytes(config.ivLength)
 
         val cipher = GCMBlockCipher(AESEngine())
         val compressedTeamPublicKey = ecdhTeamKey
-
-        val parameters = AEADParameters(KeyParameter(derivedSecret), config.authTagLength, keyIv, compressedTeamPublicKey)
+        var aad: ByteArray
+        if (dataType == "ByteArray" || dataType == null) {
+            aad = compressedTeamPublicKey
+        } else {
+            aad = createV2Aad(dataType)
+        }
+        val parameters = AEADParameters(KeyParameter(derivedSecret), config.authTagLength, keyIv, aad)
         cipher.init(true, parameters)
 
-        var metadata = generateMetadata(role)
-        val metaDataOffset = generateMetadataOffset(metadata)
-        val cipherData = concatenateNByteArrays(listOf(metaDataOffset, metadata, data))
+        var cipherData = data
+        if (!(dataType == "ByteArray" && dataType == null)) {
+            var metadata = generateMetadata(role)
+            val metaDataOffset = generateMetadataOffset(metadata)
+            cipherData = concatenateNByteArrays(listOf(metaDataOffset, metadata, data))
+        }
 
         val cipherText = ByteArray(cipher.getOutputSize(cipherData.size))
         val len = cipher.processBytes(cipherData, 0, cipherData.size, cipherText, 0)
@@ -58,12 +66,12 @@ internal class JvmDataCipher(
         return EncryptedData(cipherText, keyIv)
     }
 
-    private fun createV2Aad(dataType: DataType): ByteArray {
+    private fun createV2Aad(dataType: String): ByteArray {
         var dataTypeNumber = 0; // Default to String
 
-        if (dataType == DataType.NUMBER) {
+        if (isNumberType(dataType)) {
             dataTypeNumber = 1;
-        } else if (dataType == DataType.BOOLEAN) {
+        } else if (dataType == "Boolean") {
             dataTypeNumber = 2;
         }
 
@@ -81,6 +89,10 @@ internal class JvmDataCipher(
         }
         return concatenatedByteArray
     }
+}
+
+private fun isNumberType(type: String): Boolean {
+    return type == "Number" || type == "UInt" || type == "UByte" || type == "UShort" || type == "ULong"
 }
 
 private fun generateBytes(byteLength: Int): ByteArray {

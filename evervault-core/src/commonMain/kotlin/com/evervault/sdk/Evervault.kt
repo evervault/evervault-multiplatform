@@ -4,6 +4,7 @@ import com.evervault.sdk.core.CryptoLoader
 import com.evervault.sdk.core.DataCipher
 import com.evervault.sdk.core.Http
 import com.evervault.sdk.core.datahandlers.DataHandlers
+import com.evervault.sdk.core.exceptions.DataRolesUnsupportedException
 import com.evervault.sdk.core.keys.SharedSecretDeriver
 
 /**
@@ -170,10 +171,13 @@ internal class Client(private val config: Config, private val http: Http, privat
     }
 
     suspend fun encrypt(data: Any, role: String?): Any {
+        if (data is ByteArray && !role.isNullOrEmpty()) {
+            throw DataRolesUnsupportedException
+        }
         val cipher = cryptoLoader.loadCipher()
         val handlers = DataHandlers(cipher)
 
-        return handlers.encrypt(data, role)
+        return handlers.encrypt(data, role, data::class.simpleName)
     }
 
     suspend fun decryptWithToken(token: String, data: Any): Any {

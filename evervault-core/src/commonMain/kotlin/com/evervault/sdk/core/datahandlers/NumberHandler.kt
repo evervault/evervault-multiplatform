@@ -9,8 +9,8 @@ internal class NumberHandler(private val encryptionService: EncryptionService) :
         return data is Number || data is UInt || data is UByte || data is UShort || data is ULong
     }
 
-    override fun encrypt(data: Any, context: DataHandlerContext, role: String?): Any {
+    override fun encrypt(data: Any, context: DataHandlerContext, role: String?, dataType: String?): Any {
         val string = data.toString()
-        return encryptionService.encryptString(string, DataType.NUMBER, role)
+        return encryptionService.encryptString(string, DataType.NUMBER, role, "Number")
     }
 }

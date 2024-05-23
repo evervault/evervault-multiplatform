@@ -3,6 +3,7 @@ package com.evervault.sdk.test
 import com.evervault.sdk.EncryptionConfig
 import com.evervault.sdk.EvervaultFactory
 import com.evervault.sdk.core.DataCipher
+import com.evervault.sdk.core.DataType
 import com.evervault.sdk.core.keys.CageKey
 import com.evervault.sdk.core.keys.GeneratedSharedKey
 import org.bouncycastle.util.Arrays
@@ -35,22 +36,22 @@ class JVMDataCipherTest {
     @Test
     fun testEncrypt() {
         val testPayload = "Encrypt this String".toByteArray()
-        val result = dataCipher.encrypt(testPayload, "test-role")
+        val result = dataCipher.encrypt(testPayload, "test-role", "String")
         assertNotNull(result)
     }
 
     @Test
     fun testEncryptDataRole() {
         val testPayload = "Encrypt this String".toByteArray()
-        val result = dataCipher.encrypt(testPayload, null)
+        val result = dataCipher.encrypt(testPayload, null, "String")
         assertNotNull(result)
     }
 
     @Test
     fun testRoleMetadataIncreasesCipherTextSize() {
         val testPayload = "Encrypt this String".toByteArray()
-        val roleEncryptionResult = dataCipher.encrypt(testPayload, "test-role")
-        val nonRoleEncryptionResult = dataCipher.encrypt(testPayload, null)
+        val roleEncryptionResult = dataCipher.encrypt(testPayload, "test-role", "String")
+        val nonRoleEncryptionResult = dataCipher.encrypt(testPayload, null, "String")
 
         assertTrue(roleEncryptionResult.data.size > nonRoleEncryptionResult.data.size)
     }
@@ -58,8 +59,8 @@ class JVMDataCipherTest {
     @Test
     fun testEncryptionUniqueness() {
         val testPayload = "Encrypt this String".toByteArray()
-        val resultOne = dataCipher.encrypt(testPayload, "test-role")
-        val resultTwo = dataCipher.encrypt(testPayload, "test-role")
+        val resultOne = dataCipher.encrypt(testPayload, "test-role", "String")
+        val resultTwo = dataCipher.encrypt(testPayload, "test-role", "String")
 
         val isEqual = Arrays.areEqual(resultOne.data, resultTwo.data)
 
