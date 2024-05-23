@@ -83,7 +83,7 @@ The Evervault Kotlin Multiplatform SDK Package includes a sample app, located in
 
 ## Running Tests
 
-All tests run out of the box with the exception of `HttpRequestTest` and `HttpKeysLoaderTest`. To test these, you'll need to provide App and Team IDs as well as an API key. You will also need a role named `test-deny-role` in the provided App that denies decryption (or change the name of the role).
+All tests run out of the box with the exception of `HttpRequestTest` and `HttpKeysLoaderTest`. To test these, you'll need to provide App and Team IDs as well as an API key. You will also need a role named `test-deny-role` in the provided App that denies decryption.
 
 You can add these as environment variables by adding the following to `build.gradle.kts` in `evervault-core`:
 
