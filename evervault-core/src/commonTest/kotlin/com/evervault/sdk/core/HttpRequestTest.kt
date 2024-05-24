@@ -65,7 +65,6 @@ class HttpRequestTest {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    //private val functionName = getenv("VITE_EV_FUNCTION_NAME")
     private val apiKey = getenv("VITE_EV_API_KEY")
     private val appUuid = getenv("VITE_EV_APP_UUID")
     private val teamUuid = getenv("VITE_EV_TEAM_UUID")
