@@ -3,7 +3,6 @@
 package com.evervault.sdk.core.datahandlers
 
 import com.evervault.sdk.core.EncryptionService
-import kotlinx.coroutines.runBlocking
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.never
 import org.mockito.kotlin.*
@@ -23,7 +22,7 @@ internal class NumberHandlerTest {
     @BeforeTest
     fun setUp() {
         encryptionServiceMock = mock<EncryptionService> {
-            on { encryptString(anyOrNull(), anyOrNull()) } doReturn "encrypted"
+            on { encryptString(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()) } doReturn "encrypted"
         }
         contextMock = mock<DataHandlerContext> {}
         handler = NumberHandler(encryptionServiceMock)
@@ -50,50 +49,99 @@ internal class NumberHandlerTest {
 
     @Test
     fun testEncryptInt() {
-        assertEquals("encrypted", handler.encrypt(1, contextMock))
-        verify(encryptionServiceMock).encryptString(eq("1"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(1, contextMock, null, "Number"))
+        verify(encryptionServiceMock).encryptString(eq("1"), anyOrNull(), eq(null), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq(null), eq("Number"))
+    }
+
+    @Test
+    fun testEncryptIntDataRoles() {
+        assertEquals("encrypted", handler.encrypt(1, contextMock, "test-role", null))
+        verify(encryptionServiceMock).encryptString(eq("1"), anyOrNull(), eq("test-role"), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"), eq("Number"))
     }
 
     @Test
     fun testEncryptNegativeInt() {
-        assertEquals("encrypted", handler.encrypt(-1, contextMock))
-        verify(encryptionServiceMock).encryptString(eq("-1"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(-1, contextMock, null, null))
+        verify(encryptionServiceMock).encryptString(eq("-1"), anyOrNull(), eq(null), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq(null), eq(null))
+    }
+
+    @Test
+    fun testEncryptNegativeIntDataRoles() {
+        assertEquals("encrypted", handler.encrypt(-1, contextMock, "test-role", null))
+        verify(encryptionServiceMock).encryptString(eq("-1"), anyOrNull(), eq("test-role"), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"), eq(null))
     }
 
     @Test
     fun testEncryptFloat() {
-        assertEquals("encrypted", handler.encrypt(1.3f, contextMock))
-        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(1.3f, contextMock, null, null))
+        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull(), eq(null), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq(null), eq(null))
+    }
+
+    @Test
+    fun testEncryptFloatDataRoles() {
+        assertEquals("encrypted", handler.encrypt(1.3f, contextMock, "test-role", null))
+        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull(), eq("test-role"), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"), eq(null))
     }
 
     @Test
     fun testEncryptDouble() {
-        assertEquals("encrypted", handler.encrypt(1.3, contextMock))
-        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(1.3, contextMock, null, null))
+        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull(), eq(null), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq(null), eq(null))
+    }
+
+    @Test
+    fun testEncryptDoubleDataRoles() {
+        assertEquals("encrypted", handler.encrypt(1.3, contextMock, "test-role", null))
+        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull(), eq("test-role"), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"), eq(null))
     }
 
     @Test
     fun testEncryptUInt() {
-        assertEquals("encrypted", handler.encrypt(3.toUInt(), contextMock))
-        verify(encryptionServiceMock).encryptString(eq("3"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(3.toUInt(), contextMock, null, null))
+        verify(encryptionServiceMock).encryptString(eq("3"), anyOrNull(), eq(null), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq(null), eq(null))
+    }
+
+    @Test
+    fun testEncryptUIntDataRoles() {
+        assertEquals("encrypted", handler.encrypt(3.toUInt(), contextMock, "test-role", null))
+        verify(encryptionServiceMock).encryptString(eq("3"), anyOrNull(), eq("test-role"), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"), eq(null))
     }
 
     @Test
     fun testEncryptUByte() {
-        assertEquals("encrypted", handler.encrypt(3.toUByte(), contextMock))
-        verify(encryptionServiceMock).encryptString(eq("3"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(3.toUByte(), contextMock, null, null))
+        verify(encryptionServiceMock).encryptString(eq("3"), anyOrNull(), eq(null), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq(null), eq(null))
+    }
+
+    @Test
+    fun testEncryptUByteDataRoles() {
+        assertEquals("encrypted", handler.encrypt(3.toUByte(), contextMock, "test-role", null))
+        verify(encryptionServiceMock).encryptString(eq("3"), anyOrNull(), eq("test-role"), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"), eq(null))
     }
 
     @Test
     fun testEncryptBigDecimal() {
-        assertEquals("encrypted", handler.encrypt(BigDecimal.valueOf(1.3), contextMock))
-        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt(BigDecimal.valueOf(1.3), contextMock, null, null))
+        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull(), eq(null), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq(null), eq(null))
+    }
+
+    @Test
+    fun testEncryptBigDecimalDataRoles() {
+        assertEquals("encrypted", handler.encrypt(BigDecimal.valueOf(1.3), contextMock, "test-role", null))
+        verify(encryptionServiceMock).encryptString(eq("1.3"), anyOrNull(), eq("test-role"), eq("Number"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"), eq(null))
     }
 }

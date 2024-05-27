@@ -81,6 +81,20 @@ The `decrypt` function will return `Any`, however this can be cast to `Map<Strin
 
 The Evervault Kotlin Multiplatform SDK Package includes a sample app, located in the `examples` directory. The sample app consist of a `shared` module, which contains the Evervault Kotlin Multiplatform SDK, and an `android` module, which contains the sample app.
 
+## Running Tests
+
+All tests run out of the box with the exception of `HttpRequestTest` and `HttpKeysLoaderTest`. To test these, you'll need to provide App and Team IDs as well as an API key. You will also need a role named `test-deny-role` in the provided App that denies decryption.
+
+You can add these as environment variables by adding the following to `build.gradle.kts` in `evervault-core`:
+
+```
+tasks.withType<Test> {
+    environment("VITE_EV_API_KEY", "<API_KEY>")
+    environment("VITE_EV_APP_UUID", "<APP_ID>")
+    environment("VITE_EV_TEAM_UUID", "<TEAM_ID>")
+}
+```
+
 ## License
 
 The sample app is released under the MIT License. See the [LICENSE](https://github.com/evervault/evervault-multiplatform/blob/main/LICENSE) file for more information.

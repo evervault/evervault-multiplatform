@@ -2,6 +2,7 @@ package com.evervault.sdk.core
 
 // import com.evervault.sdk.core.models.FunctionResponseResult
 import com.evervault.sdk.ConfigUrls
+import com.evervault.sdk.Evervault
 import com.evervault.sdk.HttpConfig
 import com.evervault.sdk.test.getenv
 import io.ktor.client.HttpClient
@@ -20,6 +21,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import java.util.Base64
 import kotlinx.serialization.json.Json
 import com.google.gson.Gson
@@ -28,6 +30,11 @@ import com.google.gson.Gson
 @Serializable
 data class TokenData(
     val token: String,
+)
+
+@Serializable
+data class SimpleObject<T>(
+    var data: T,
 )
 
 @Serializable
@@ -58,7 +65,6 @@ class HttpRequestTest {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    private val functionName = getenv("VITE_EV_FUNCTION_NAME")
     private val apiKey = getenv("VITE_EV_API_KEY")
     private val appUuid = getenv("VITE_EV_APP_UUID")
     private val teamUuid = getenv("VITE_EV_TEAM_UUID")
@@ -115,6 +121,209 @@ class HttpRequestTest {
         }
 
         return task.await()
+    }
+
+    @Test
+    fun testDecryptWithSDKStringEncrypt() = runBlocking {
+        val http = Http(
+            config = HttpConfig(
+                keysUrl = ConfigUrls().keysUrl,
+                apiUrl = ConfigUrls().apiUrl
+            ),
+            teamId = teamUuid,
+            appId = appUuid,
+            context = "default"
+        )
+
+        // Encrypt some data
+        Evervault.shared.configure(teamUuid, appUuid)
+        var inputData = "test"
+        val encrypted = Evervault.shared.encrypt(inputData) as String
+        // Get a run token
+        val data = SimpleObject(
+            data = encrypted
+        )
+        val token = createClientSideToken(ConfigUrls().apiUrl, data)
+        val decrypted = http.decryptWithToken(token.token, data) as Map<String, Any>
+
+        assertEquals(
+            "test",
+            decrypted["data"],
+        )
+    }
+
+    @Test
+    fun testDecryptWithSDKNumberEncrypt() = runBlocking {
+        val http = Http(
+            config = HttpConfig(
+                keysUrl = ConfigUrls().keysUrl,
+                apiUrl = ConfigUrls().apiUrl
+            ),
+            teamId = teamUuid,
+            appId = appUuid,
+            context = "default"
+        )
+
+        // Encrypt some data
+        Evervault.shared.configure(teamUuid, appUuid)
+        var inputData = 1
+        val encrypted = Evervault.shared.encrypt(inputData) as String
+        // Get a run token
+        val data = SimpleObject(
+            data = encrypted
+        )
+        val token = createClientSideToken(ConfigUrls().apiUrl, data)
+        val decrypted = http.decryptWithToken(token.token, data) as Map<String, Any>
+
+        assertEquals(
+            1.0,
+            decrypted["data"],
+        )
+    }
+
+    @Test
+    fun testDecryptWithSDKBooleanEncrypt() = runBlocking {
+        val http = Http(
+            config = HttpConfig(
+                keysUrl = ConfigUrls().keysUrl,
+                apiUrl = ConfigUrls().apiUrl
+            ),
+            teamId = teamUuid,
+            appId = appUuid,
+            context = "default"
+        )
+
+        // Encrypt some data
+        Evervault.shared.configure(teamUuid, appUuid)
+        var inputData = true
+        val encrypted = Evervault.shared.encrypt(inputData) as String
+        // Get a run token
+        val data = SimpleObject(
+            data = encrypted
+        )
+        val token = createClientSideToken(ConfigUrls().apiUrl, data)
+        val decrypted = http.decryptWithToken(token.token, data) as Map<String, Any>
+        assertEquals(
+            true,
+            decrypted["data"],
+        )
+    }
+
+    @Test
+    fun testDecryptWithSDKArrayEncrypt() = runBlocking {
+        val http = Http(
+            config = HttpConfig(
+                keysUrl = ConfigUrls().keysUrl,
+                apiUrl = ConfigUrls().apiUrl
+            ),
+            teamId = teamUuid,
+            appId = appUuid,
+            context = "default"
+        )
+
+        // Encrypt some data
+        Evervault.shared.configure(teamUuid, appUuid)
+        var inputData = arrayListOf("hello", "test", "abc")
+        val encrypted = Evervault.shared.encrypt(inputData) as Iterable<String>
+        // Get a run token
+        val data = SimpleObject(
+            data = encrypted
+        )
+        val token = createClientSideToken(ConfigUrls().apiUrl, data)
+        val decrypted = http.decryptWithToken(token.token, data) as Map<String, Any>
+        assert(
+            inputData.equals(decrypted["data"]),
+        )
+    }
+
+    @Test
+    fun testDecryptWithSDKDictionaryEncrypt() = runBlocking {
+        val http = Http(
+            config = HttpConfig(
+                keysUrl = ConfigUrls().keysUrl,
+                apiUrl = ConfigUrls().apiUrl
+            ),
+            teamId = teamUuid,
+            appId = appUuid,
+            context = "default"
+        )
+
+        // Encrypt some data
+        Evervault.shared.configure(teamUuid, appUuid)
+        var inputData = mapOf("key1" to "value1", "key2" to "value2")
+        val encrypted = Evervault.shared.encrypt(inputData) as Map<String, String>
+        // Get a run token
+        val data = SimpleObject(
+            data = encrypted
+        )
+        val token = createClientSideToken(ConfigUrls().apiUrl, data)
+        val decrypted = http.decryptWithToken(token.token, data) as Map<String, Any>
+        assert(
+            inputData.equals(decrypted["data"]),
+        )
+    }
+
+    @Test
+    fun testDecryptWithSDKMultidimensionalArrayEncrypt() = runBlocking {
+        val http = Http(
+            config = HttpConfig(
+                keysUrl = ConfigUrls().keysUrl,
+                apiUrl = ConfigUrls().apiUrl
+            ),
+            teamId = teamUuid,
+            appId = appUuid,
+            context = "default"
+        )
+
+        // Encrypt some data
+        Evervault.shared.configure(teamUuid, appUuid)
+        var inputData = listOf(listOf("value1", "value2"), 2)
+        val encrypted = Evervault.shared.encrypt(inputData) as List<*>
+        // Get a run token
+        val data = SimpleObject(
+            data = encrypted
+        )
+        val token = createClientSideToken(ConfigUrls().apiUrl, data)
+        val decrypted = http.decryptWithToken(token.token, data) as Map<String, Any>
+        assertEquals(
+            listOf(listOf("value1", "value2"), 2.0),
+            decrypted["data"]
+        )
+    }
+
+    @Test
+    fun testDecryptWithSDKStringEncryptDenyRole() = runBlocking {
+        val http = Http(
+            config = HttpConfig(
+                keysUrl = ConfigUrls().keysUrl,
+                apiUrl = ConfigUrls().apiUrl
+            ),
+            teamId = teamUuid,
+            appId = appUuid,
+            context = "default"
+        )
+
+        // Encrypt some data
+        Evervault.shared.configure(teamUuid, appUuid)
+        var inputData = "test"
+        val encrypted = Evervault.shared.encrypt(inputData, "test-deny-role") as String
+        // Get a run token
+        val data = SimpleObject(
+            data = encrypted
+        )
+        val token = createClientSideToken(ConfigUrls().apiUrl, data)
+        val exception = assertFailsWith<java.lang.Error>(
+            block = {
+                runBlocking {
+                    http.decryptWithToken(token.token, data) as Map<String, Any>
+                }
+            }
+        )
+
+        assertEquals(
+            "Failed to decrypt data. Status code: 403 ",
+            exception.message
+        )
     }
 
     @Test

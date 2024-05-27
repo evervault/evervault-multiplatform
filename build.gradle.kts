@@ -8,7 +8,7 @@ buildscript {
     }
 }
 group = "com.evervault.sdk"
-version = "1.1"
+version = "1.2"
 plugins {
     kotlin("jvm") version "1.8.21" apply false
     id("org.jetbrains.kotlin.android") version "1.8.20" apply false

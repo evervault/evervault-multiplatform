@@ -8,7 +8,7 @@ internal class BytesHandler(private val encryptionService: EncryptionService) : 
         return data is ByteArray
     }
 
-    override fun encrypt(data: Any, context: DataHandlerContext): Any {
-        return encryptionService.encryptData(data as ByteArray)
+    override fun encrypt(data: Any, context: DataHandlerContext, role: String?, dataType: String?): Any {
+        return encryptionService.encryptData(data as ByteArray, role, dataType)
     }
 }

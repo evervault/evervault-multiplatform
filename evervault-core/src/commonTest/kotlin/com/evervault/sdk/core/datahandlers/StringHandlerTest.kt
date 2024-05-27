@@ -3,9 +3,7 @@
 package com.evervault.sdk.core.datahandlers
 
 import com.evervault.sdk.core.EncryptionService
-import kotlinx.coroutines.runBlocking
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
 import org.mockito.kotlin.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -22,7 +20,7 @@ internal class StringHandlerTest {
     @BeforeTest
     fun setUp() {
         encryptionServiceMock = mock<EncryptionService> {
-            on { encryptString(anyOrNull(), anyOrNull()) } doReturn "encrypted"
+            on { encryptString(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()) } doReturn "encrypted"
         }
         contextMock = mock<DataHandlerContext> {}
         handler = StringHandler(encryptionServiceMock)
@@ -43,8 +41,15 @@ internal class StringHandlerTest {
 
     @Test
     fun testEncrypt() {
-        assertEquals("encrypted", handler.encrypt("String value", contextMock))
-        verify(encryptionServiceMock).encryptString(eq("String value"), anyOrNull())
-        verify(contextMock, never()).encrypt(anyOrNull())
+        assertEquals("encrypted", handler.encrypt("String value", contextMock, null, "String"))
+        verify(encryptionServiceMock).encryptString(eq("String value"), anyOrNull(), eq(null), eq("String"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq(null), eq("String"))
+    }
+
+    @Test
+    fun testEncryptDataRoles() {
+        assertEquals("encrypted", handler.encrypt("String value", contextMock, "test-role", "String"))
+        verify(encryptionServiceMock).encryptString(eq("String value"), anyOrNull(), eq("test-role"), eq("String"))
+        verify(contextMock, never()).encrypt(anyOrNull(), eq("test-role"), eq("String"))
     }
 }

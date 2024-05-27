@@ -11,7 +11,7 @@ plugins {
 val ktorVersion = "2.3.1"
 
 group = "com.evervault.sdk"
-version = "1.1"
+version = "1.2"
 
 kotlin {
     jvm {
@@ -49,6 +49,7 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
+                implementation(kotlin("test"))
                 implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
                 implementation("org.bouncycastle:bcprov-jdk15on:1.70")
             }
